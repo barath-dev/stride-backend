@@ -77,7 +77,7 @@ jobs:
 
       - name: Remove old images
         run: |
-          sudo docker image prune -af --filter "label=com.docker.compose.project=stride-backend"
+          sudo docker image prune -af --filter "label=com.docker.compose.project=targafy"
           sudo docker rmi barathwaj911/stride-backend:latest || true
 
       - name: Pull Image from Docker Hub
@@ -93,7 +93,7 @@ jobs:
             -e AWS_SECRET_KEY='${{ secrets.AWS_SECRET_KEY }}' \
             -e HTTPS_PORT='${{ secrets.HTTPS_PORT }}' \
             -e HTTP_PORT='${{ secrets.HTTP_PORT }}' \
-              barath911/stride-backend:latest
+              barathwaj911/stride-backend:latest
 
       - name: Clean up old images
         run: sudo docker image prune -af
