@@ -28,9 +28,11 @@ jobs:
       - name: Build and Push Multi-Arch Docker Image
         run: |
           docker buildx build \
-            --platform linux/amd64,linux/arm64 \
-            -t barathwaj911/stride-backend:latest \
-            --push .
+          --platform linux/amd64,linux/arm64 \
+          -t barathwaj911/stride-backend:latest \
+          --build-arg NODE_ENV=production \
+          --no-cache \
+          --push .
 
   deploy-main:
     needs: build
