@@ -33,4 +33,4 @@ EXPOSE 443
 EXPOSE 80
 EXPOSE 3000
 
-CMD ["npm", "run", "dev"]
+CMD ["npm", "start"]
