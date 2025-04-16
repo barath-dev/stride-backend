@@ -1,3 +1,6 @@
+const dotenv = require("dotenv");
+dotenv.config();
+
 module.exports = {
   "development": {
     "username": "postgres",
@@ -16,11 +19,17 @@ module.exports = {
     "dialect": "postgres"
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
-    "host": "127.0.0.1",
+    "username": "postgres",
+    "password": process.env.DB_PASSWORD_PROD,
+    "database": "postgres",
+    "host": "stride-prod-database.cofeus8mq2xp.us-east-1.rds.amazonaws.com",
     "port": 5432,
-    "dialect": "mysql"
+    "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false  // Use this for testing only
+      }
+    }
   }
 }
