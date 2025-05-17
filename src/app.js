@@ -14,6 +14,7 @@ const authRoutes = require("./routes/auth.route");
 const testingRoutes = require("./routes/testing.route");
 const socialRoutes = require("./routes/social.route");
 const userRoutes = require("./routes/user.route");
+const activityRoutes = require("./routes/activity.route");
 
 
 dotenv.config();
@@ -36,6 +37,8 @@ app.use("/api/v1/social", socialRoutes);
 app.use("/api/v1/upload", require("./routes/upload.route"));
 app.use("/api/v1/user", userRoutes);
 
+app.use("/api/v1/activity", activityRoutes);
+
 // app.use("*",catchAsync( async (req, res,next) => {
 //   throw new AppError("This is a error from appError Class",404);
 // }));
@@ -45,7 +48,7 @@ app.use("/api/v1/user", userRoutes);
 
 
 
-app.listen(process.env.HTTP_PORT || 3000, () => {
+app.listen(process.env.HTTP_PORT || 3000,'0.0.0.0', () => {
   console.log(`Server running on port ${process.env.HTTP_PORT || 3000}`);
 });
 
@@ -56,6 +59,6 @@ https.createServer(
     cert: fs.readFileSync("client-cert.pem"),
   },
   app
-).listen(process.env.HTTPS_PORT || 443, () => {
+).listen(process.env.HTTPS_PORT || 443, '0.0.0.0', () => {
   console.log(`Server running on port ${process.env.HTTPS_PORT || 443}`);
 });
