@@ -1,14 +1,19 @@
 const express = require("express");
-const router = require("./routes/auth.route");
+
 const dotenv = require("dotenv");
 const http = require("http");
 const https = require("https");
 const fs = require("fs");
-// const { catchAsync } = require("./src/utils/catchAsync");
-// const AppError = require("./src/utils/appError");
+const { catchAsync } = require("./utils/catchAsync");
+const AppError = require("./utils/appError");
 // const globalErrorHandler = require("./src/controllers/error/errorController");
 const db = require("./../config/db");
 
+
+const authRoutes = require("./routes/auth.route");
+const testingRoutes = require("./routes/testing.route");
+const socialRoutes = require("./routes/social.route");
+const userRoutes = require("./routes/user.route");
 
 
 dotenv.config();
@@ -18,31 +23,32 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-app.get("/", (req, res) => {
+app.get("/test", (req, res) => {
   res.status(200).json({
     message: "Hello World",
     status: "success",  
   });
 });
 
-app.use("/api/v1/auth", router);
+app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/testing", testingRoutes);
+app.use("/api/v1/social", socialRoutes);
+app.use("/api/v1/upload", require("./routes/upload.route"));
+app.use("/api/v1/user", userRoutes);
 
 // app.use("*",catchAsync( async (req, res,next) => {
 //   throw new AppError("This is a error from appError Class",404);
-//   // return res.status(404).json({
-//   //   message: "Page not found",
-//   //   status: "error",
-//   // });
 // }));
 
-// app.use(globalErrorHandler);
+// app.use();
 
-http.createServer((req, res) => {
-  res.writeHead(301, { Location: "https://" + req.headers.host + req.url });
-  res.end();
-}).listen(process.env.HTTP_PORT || 3000, () => {
+
+
+
+app.listen(process.env.HTTP_PORT || 3000, () => {
   console.log(`Server running on port ${process.env.HTTP_PORT || 3000}`);
 });
+
 
 https.createServer(
   {
