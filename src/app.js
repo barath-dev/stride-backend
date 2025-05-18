@@ -48,7 +48,7 @@ app.use("/api/v1/activity", activityRoutes);
 
 
 
-app.listen(process.env.HTTP_PORT || 3000,'0.0.0.0', () => {
+app.listen(process.env.HTTP_PORT || 3000, () => {
   console.log(`Server running on port ${process.env.HTTP_PORT || 3000}`);
 });
 
@@ -59,6 +59,6 @@ https.createServer(
     cert: fs.readFileSync("client-cert.pem"),
   },
   app
-).listen(process.env.HTTPS_PORT || 443, '0.0.0.0', () => {
+).listen(process.env.HTTPS_PORT || 443,  () => {
   console.log(`Server running on port ${process.env.HTTPS_PORT || 443}`);
 });
