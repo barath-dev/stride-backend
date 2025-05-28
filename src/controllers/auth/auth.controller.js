@@ -1,3 +1,4 @@
+
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { v4: uuidv4 } = require('uuid');
@@ -7,7 +8,7 @@ const models = require("../../models");
 
 const generateToken = (payload) => {
   return jwt.sign(payload, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
+    // expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
 

@@ -15,6 +15,7 @@ const testingRoutes = require("./routes/testing.route");
 const socialRoutes = require("./routes/social.route");
 const userRoutes = require("./routes/user.route");
 const activityRoutes = require("./routes/activity.route");
+const communityRoutes = require("./routes/community.route");
 
 
 dotenv.config();
@@ -36,6 +37,7 @@ app.use("/api/v1/testing", testingRoutes);
 app.use("/api/v1/social", socialRoutes);
 app.use("/api/v1/upload", require("./routes/upload.route"));
 app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/community", communityRoutes);
 
 app.use("/api/v1/activity", activityRoutes);
 

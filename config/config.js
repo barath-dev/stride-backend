@@ -22,7 +22,7 @@ module.exports = {
     "username": "postgres",
     "password": process.env.DB_PASSWORD_PROD,
     "database": "postgres",
-    "host": "stride-prod-database.cofeus8mq2xp.us-east-1.rds.amazonaws.com",
+    "host": "stride-main-database.cofeus8mq2xp.us-east-1.rds.amazonaws.com",
     "port": 5432,
     "dialect": "postgres",
     "dialectOptions": {
