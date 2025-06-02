@@ -2,7 +2,7 @@ const { Router } = require("express");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-const { uploadFile: uploadFileService } = require("../services/fileUpload");
+const { uploadFile: uploadFileService } = require("../services/fileUpload.js");
 
 const uploadRoutes = Router();
 
