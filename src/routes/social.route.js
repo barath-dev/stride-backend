@@ -11,6 +11,10 @@ socialRoutes.delete('/deleteAllPost',deleteAllPost);
 
 socialRoutes.post('createPostByActivity');
 
+socialRoutes.post('/followUser');
+
+socialRoutes.post('/unfollowUser');
+
 socialRoutes.put('/likePost');
 
 socialRoutes.delete('/deletePost');

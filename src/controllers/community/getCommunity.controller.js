@@ -1,7 +1,7 @@
+const { where } = require('sequelize');
 const models = require('../../models');
 
 const getCommunities = async (req, res) => {
-  const communityId = req.params.id;
   try {
     const community = await models.Community.findAll();
     if (!community) {
@@ -20,8 +20,9 @@ const getCommunities = async (req, res) => {
 const getCommunitybyId = async (req, res) => {
   const communityId = req.params.id;
   try {
+    console.log(communityId);
     const community = await models.Community.findOne({
-      communityId: communityId,
+      where: { communityId: communityId },
     });
     if (!community) {
       return res.status(404).json({

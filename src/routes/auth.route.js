@@ -10,6 +10,8 @@ router.post("/signUpwithGoogle",);
 
 router.post("/verify",verifyOtp);
 
+router.post("/verify-token",);
+
 router.post("/signUp",signUp); 
 
 module.exports = router;
