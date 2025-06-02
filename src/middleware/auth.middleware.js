@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 const models = require("../models");
 
 const authMiddleware = async (req, res, next) => {
+  console.log("authMiddleware");
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
@@ -20,6 +21,7 @@ const authMiddleware = async (req, res, next) => {
   // Verify token
   let tokenData;
   try {
+    console.log("middleware");
     tokenData = jwt.verify(token, process.env.JWT_SECRET);
   } catch (error) {
     return res.status(401).json({
@@ -33,12 +35,16 @@ const authMiddleware = async (req, res, next) => {
     where: { userId: tokenData.userId }
   });
 
+
+
   if (!foundUser) {
     return res.status(401).json({
       message: "Invalid token",
       status: "error",
     });
   }
+
+  console.log("middleware passed");
 
   req.user = foundUser;
   next();

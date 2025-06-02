@@ -1,7 +1,6 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Post extends Model {
     /**
@@ -10,17 +9,79 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      // Define association here
+      Post.belongsTo(models.Community, { foreignKey: 'communityId' });
     }
   }
-  Post.init({
-    caption: DataTypes.STRING,
-    userId: DataTypes.STRING,
-    imageUrl: DataTypes.STRING,
-    stat: DataTypes.JSONB
-  }, {
-    sequelize,
-    modelName: 'Post',
-  });
+
+  Post.init(
+    {
+      caption: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      userId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      imageUrl: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        defaultValue: null,
+      },
+      category: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          isIn: [
+            [
+              'Running',
+              'Cycling',
+              'Yoga',
+              'Hiking',
+              'Fitness',
+              'Swimming',
+              'Basketball',
+              'Tennis',
+              'Soccer',
+              'Other',
+            ],
+          ],
+        },
+      },
+      stats: {
+        type: DataTypes.JSONB,
+        allowNull: true,
+      },
+      likedBy: {
+        type: DataTypes.JSONB,
+        defaultValue: [],
+        allowNull: false,
+      },
+      postId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      communityId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      likeCount: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+        allowNull: false,
+        validate: {
+          isInt: true,
+          min: 0,
+        },
+      },
+    },
+    {
+      sequelize,
+      modelName: 'Post',
+    }
+  );
+
   return Post;
 };

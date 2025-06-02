@@ -283,6 +283,10 @@ const login = async (req, res) => {
       userId: foundUser.userId,
     });
 
+    //remove password from response
+    delete foundUser.password;
+    delete foundUser.id;
+
     return res.status(200).json({
       status: 'success',
       message: 'Login successful',
@@ -342,6 +346,10 @@ const verifyToken = async (req, res) => {
         status: 'error',
       });
     }
+
+    //remove password from response
+    delete foundUser.password;
+    delete foundUser.id;
 
     return res.status(200).json({
       status: 'success',
