@@ -16,4 +16,6 @@ activityRoutes.get('/getActivity/:id');
 
 activityRoutes.get('/getActivities',getActivities);
 
+activityRoutes.get('/getRecentActivity',getActivities);
+
 module.exports = activityRoutes;
