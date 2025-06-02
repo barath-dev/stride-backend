@@ -1,11 +1,11 @@
 const { Router } = require('express');
-const authMiddleware = require('../middleware/auth.middleware');
+const authMiddleware = require('../middleware/auth.middleware.js');
 const {
   createPost,
   getPosts,
   deleteAllPost,
-} = require('../controllers/social/post/post.controller');
-const { likePost, unlikePost } = require('../controllers/social/post/like.controller');
+} = require('../controllers/social/post/post.controller.js');
+const { likePost, unlikePost } = require('../controllers/social/post/like.controller.js');
 
 const socialRoutes = Router();
 

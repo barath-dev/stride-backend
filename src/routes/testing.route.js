@@ -1,6 +1,6 @@
 const { Router } = require("express");
-const {fetchAllUsers, deleteAllUsers} = require("../controllers/testing/fetchAllUsers");
-const testPost = require("../controllers/testing/testPost");
+const {fetchAllUsers, deleteAllUsers} = require("../controllers/testing/fetchAllUsers.js");
+const testPost = require("../controllers/testing/testPost.js");
 
 
 const testingRoutes = Router();

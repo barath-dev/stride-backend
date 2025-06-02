@@ -1,8 +1,8 @@
 const { Router } = require("express");
-const authMiddleware = require("../middleware/auth.middleware");
-const saveActivity = require("../controllers/activity/saveActivity.cotroller");
-const getActivities = require("../controllers/activity/getActivities.controller");
-const deleteActivitybyId = require("../controllers/activity/deleteActivitybyId.controller");
+const authMiddleware = require("../middleware/auth.middleware.js");
+const saveActivity = require("../controllers/activity/saveActivity.cotroller.js");
+const getActivities = require("../controllers/activity/getActivities.controller.js");
+const deleteActivitybyId = require("../controllers/activity/deleteActivitybyId.controller.js");
 
 const activityRoutes = Router();
 

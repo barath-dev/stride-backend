@@ -6,12 +6,12 @@ const authMiddleware = require('../middleware/auth.middleware');
 const {
   getCommunities,
   getCommunitybyId,
-} = require('../controllers/community/getCommunity.controller');
-const createCommunity = require('../controllers/community/createCommunity.controller');
-const deleteCommunity = require('../controllers/community/deleteCommunity.controller');
-const joinCommunity = require('../controllers/community/joincommunity.controller');
-const leaveCommunity = require('../controllers/community/leaveCommunity.controller');
-const updateCommunity = require('../controllers/community/updateCommunity.controller');
+} = require('../controllers/community/getCommunity.controller.js');
+const createCommunity = require('../controllers/community/createCommunity.controller.js');
+const deleteCommunity = require('../controllers/community/deleteCommunity.controller.js');
+const joinCommunity = require('../controllers/community/joinCommunity.controller.js');
+const leaveCommunity = require('../controllers/community/leaveCommunity.controller.js');
+const updateCommunity = require('../controllers/community/updateCommunity.controller.js');
 
 communityRoutes.use(authMiddleware);
 

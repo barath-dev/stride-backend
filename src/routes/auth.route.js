@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { login, signUp, verifyOtp } = require('../controllers/auth/auth.controller');
+const { login, signUp, verifyOtp } = require('../controllers/auth/auth.controller.js');
 
 
 const router = Router();
