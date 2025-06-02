@@ -1,5 +1,5 @@
-const { catchAsync } = require('../../utils/catchAsync');
-const models = require('../../models');
+const { catchAsync } = require('../../../utils/catchAsync');
+const models = require('../../../models');
 const { v4: uuidv4 } = require('uuid');
 
 const createPost = catchAsync(async (req, res, next) => {

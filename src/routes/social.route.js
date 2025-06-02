@@ -1,16 +1,21 @@
-const { Router } = require("express");
-const { createPost, getPosts, deleteAllPost } = require("../controllers/social/post.controller");
-const authMiddleware = require("../middleware/auth.middleware");
+const { Router } = require('express');
+const authMiddleware = require('../middleware/auth.middleware');
+const {
+  createPost,
+  getPosts,
+  deleteAllPost,
+} = require('../controllers/social/post/post.controller');
+const { likePost, unlikePost } = require('../controllers/social/post/like.controller');
 
 const socialRoutes = Router();
 
 socialRoutes.use(authMiddleware);
 
-socialRoutes.get('/getAllPosts',getPosts);
+socialRoutes.get('/getAllPosts', getPosts);
 
-socialRoutes.post('/createPost',createPost);
+socialRoutes.post('/createPost', createPost);
 
-socialRoutes.delete('/deleteAllPost',deleteAllPost);
+socialRoutes.delete('/deleteAllPost', deleteAllPost);
 
 // socialRoutes.post('createPostByActivity');
 
@@ -18,7 +23,9 @@ socialRoutes.post('/followUser');
 
 socialRoutes.post('/unfollowUser');
 
-socialRoutes.put('/likePost');
+socialRoutes.put('/likePost', likePost);
+
+socialRoutes.delete('/unlikePost', unlikePost);
 
 socialRoutes.delete('/deletePost');
 
