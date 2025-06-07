@@ -11,6 +11,12 @@ const verifyToken = async (req, res) => {
     var response = {
       message: 'User found',
       status: 'success',
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        token: user.token,
+      },
     };
     return res.status(200).json({ user });
   } catch (error) {
