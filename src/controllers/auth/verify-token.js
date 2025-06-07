@@ -18,7 +18,7 @@ const verifyToken = async (req, res) => {
         token: user.token,
       },
     };
-    return res.status(200).json({ user });
+    return res.status(200).json(response);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: 'Internal Server Error' });
