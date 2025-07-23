@@ -1,28 +1,53 @@
+// src/models/otp.js
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Otp extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      // Otp.belongsTo(models.User, {
-      //   foreignKey: 'userId',
-      //   as: 'user',
-      //   onDelete: 'CASCADE',
-      // });
+      // OTP belongs to a User
+      Otp.belongsTo(models.User, {
+        foreignKey: 'userId',
+        targetKey: 'userId',
+        as: 'user',
+        onDelete: 'CASCADE',
+      });
     }
   }
-  Otp.init({
-    userId: DataTypes.STRING,
-    otp: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'Otp',
-  });
+  Otp.init(
+    {
+      userId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        references: {
+          model: 'Users',
+          key: 'userId',
+        },
+      },
+      otp: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      expiresAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: function () {
+          // Default expiry of 10 minutes
+          return new Date(Date.now() + 10 * 60 * 1000);
+        },
+      },
+    },
+    {
+      sequelize,
+      modelName: 'Otp',
+      indexes: [
+        {
+          fields: ['userId'],
+        },
+        {
+          fields: ['otp'],
+        },
+      ],
+    }
+  );
   return Otp;
 };

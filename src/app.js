@@ -1,5 +1,5 @@
 const express = require("express");
-
+const cors = require("cors");
 const dotenv = require("dotenv");
 const http = require("http");
 const https = require("https");
@@ -19,7 +19,7 @@ const communityRoutes = require("./routes/community.route");
 
 
 dotenv.config();
-
+app.use(cors());
 
 
 const app = express();
