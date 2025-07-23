@@ -7,46 +7,46 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       communityId: {
         type: Sequelize.STRING,
         unique: true,
-        allowNull: false
+        allowNull: false,
       },
       communityName: {
         type: Sequelize.TEXT,
         allowNull: false,
-        unique: true
+        unique: true,
       },
       communityDescription: {
         type: Sequelize.TEXT,
-        allowNull: false
+        allowNull: false,
       },
       profileUrl: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true
+        unique: true,
       },
       followers: {
         type: Sequelize.JSON,
-        defaultValue: []
+        defaultValue: [],
       },
       postIds: {
         type: Sequelize.JSON,
-        defaultValue: []
+        defaultValue: [],
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Communities');
-  }
+  },
 };
