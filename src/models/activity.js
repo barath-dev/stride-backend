@@ -1,30 +1,27 @@
-// src/models/activity.js
 'use strict';
-const { Model } = require('sequelize');
+const { Model, Op } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Activity extends Model {
     static associate(models) {
-      // Activity belongs to a User
+      // Activity belongs to User
       Activity.belongsTo(models.User, {
         foreignKey: 'userId',
-        targetKey: 'userId',
+        targetKey: 'userId', // Reference User.userId instead of User.id
         as: 'user',
         onDelete: 'CASCADE',
       });
     }
   }
+
   Activity.init(
     {
       userId: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(36),
         allowNull: false,
-        references: {
-          model: 'Users',
-          key: 'userId',
-        },
       },
       category: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(20),
         allowNull: false,
         validate: {
           isIn: [
@@ -46,33 +43,57 @@ module.exports = (sequelize, DataTypes) => {
       details: {
         type: DataTypes.JSONB,
         allowNull: false,
-        defaultValue: {},
+        validate: {
+          notEmpty: true,
+          isValidDetails(value) {
+            if (!value || typeof value !== 'object') {
+              throw new Error('Details must be a valid JSON object');
+            }
+          },
+        },
       },
-      activityId: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
+      duration: {
+        type: DataTypes.INTEGER, // Duration in minutes
+        allowNull: true,
+        validate: {
+          min: 0,
+        },
+      },
+      distance: {
+        type: DataTypes.FLOAT, // Distance in kilometers
+        allowNull: true,
+        validate: {
+          min: 0,
+        },
+      },
+      calories: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        validate: {
+          min: 0,
+        },
       },
     },
     {
       sequelize,
       modelName: 'Activity',
-      indexes: [
-        {
-          fields: ['userId'],
-        },
-        {
-          fields: ['category'],
-        },
-        {
-          unique: true,
-          fields: ['activityId'],
-        },
-        {
-          fields: ['createdAt'],
-        },
-      ],
+      defaultScope: {
+        order: [['createdAt', 'DESC']],
+      },
+      scopes: {
+        byCategory: category => ({
+          where: { category },
+        }),
+        recent: (days = 30) => ({
+          where: {
+            createdAt: {
+              [Op.gte]: new Date(Date.now() - days * 24 * 60 * 60 * 1000),
+            },
+          },
+        }),
+      },
     }
   );
+
   return Activity;
 };

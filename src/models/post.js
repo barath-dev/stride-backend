@@ -1,55 +1,88 @@
-// src/models/post.js
 'use strict';
 const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
   class Post extends Model {
     static associate(models) {
-      // Post belongs to a Community
+      // Post belongs to User
+      Post.belongsTo(models.User, {
+        foreignKey: 'userId',
+        targetKey: 'userId', // Reference User.userId instead of User.id
+        as: 'author',
+        onDelete: 'CASCADE',
+      });
+
+      // Post belongs to Community (optional)
       Post.belongsTo(models.Community, {
         foreignKey: 'communityId',
         as: 'community',
+        onDelete: 'SET NULL',
       });
+    }
 
-      // Post belongs to a User
-      Post.belongsTo(models.User, {
-        foreignKey: 'userId',
-        targetKey: 'userId',
-        as: 'author',
-      });
+    // Instance methods
+    getLikeCount() {
+      return Array.isArray(this.likedBy) ? this.likedBy.length : 0;
+    }
 
-      // Post likes will be handled through PostLike model instead of JSON array
-      Post.belongsToMany(models.User, {
-        through: 'PostLike',
-        foreignKey: 'postId',
-        otherKey: 'userId',
-        as: 'likedByUsers',
-      });
+    isLikedBy(userId) {
+      return Array.isArray(this.likedBy) && this.likedBy.includes(userId);
+    }
+
+    async addLike(userId) {
+      if (!this.isLikedBy(userId)) {
+        const updatedLikes = [...(this.likedBy || []), userId];
+        await this.update({
+          likedBy: updatedLikes,
+          likeCount: updatedLikes.length,
+        });
+        return true;
+      }
+      return false;
+    }
+
+    async removeLike(userId) {
+      if (this.isLikedBy(userId)) {
+        const updatedLikes = (this.likedBy || []).filter(id => id !== userId);
+        await this.update({
+          likedBy: updatedLikes,
+          likeCount: updatedLikes.length,
+        });
+        return true;
+      }
+      return false;
     }
   }
 
   Post.init(
     {
-      caption: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      userId: {
-        type: DataTypes.STRING,
+      postId: {
+        type: DataTypes.STRING(36),
         allowNull: false,
-        references: {
-          model: 'Users',
-          key: 'userId',
+        unique: true,
+      },
+      caption: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+        validate: {
+          len: [0, 2000],
         },
       },
+      userId: {
+        type: DataTypes.STRING(36),
+        allowNull: false,
+      },
       imageUrl: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(500),
         allowNull: true,
-        defaultValue: null,
+        validate: {
+          isUrl: true,
+        },
       },
       category: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(20),
         allowNull: false,
+        defaultValue: 'Other',
         validate: {
           isIn: [
             [
@@ -71,24 +104,21 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.JSONB,
         allowNull: true,
       },
-      // This will be replaced by the PostLike association table
       likedBy: {
         type: DataTypes.JSONB,
         defaultValue: [],
         allowNull: false,
-      },
-      postId: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
+        validate: {
+          isArray(value) {
+            if (!Array.isArray(value)) {
+              throw new Error('LikedBy must be an array');
+            }
+          },
+        },
       },
       communityId: {
         type: DataTypes.INTEGER,
         allowNull: true,
-        references: {
-          model: 'Communities',
-          key: 'id',
-        },
       },
       likeCount: {
         type: DataTypes.INTEGER,
@@ -99,28 +129,48 @@ module.exports = (sequelize, DataTypes) => {
           min: 0,
         },
       },
+      isActive: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
+        allowNull: false,
+      },
     },
     {
       sequelize,
       modelName: 'Post',
-      indexes: [
-        {
-          fields: ['userId'],
+      defaultScope: {
+        where: { isActive: true },
+        order: [['createdAt', 'DESC']],
+      },
+      scopes: {
+        withInactive: {
+          where: {},
         },
-        {
-          fields: ['communityId'],
+        byCategory: category => ({
+          where: { category, isActive: true },
+        }),
+        popular: {
+          where: { isActive: true },
+          order: [
+            ['likeCount', 'DESC'],
+            ['createdAt', 'DESC'],
+          ],
         },
-        {
-          unique: true,
-          fields: ['postId'],
+        recent: {
+          where: { isActive: true },
+          order: [['createdAt', 'DESC']],
         },
-        {
-          fields: ['category'],
+      },
+      hooks: {
+        beforeUpdate: post => {
+          // Sync likeCount with likedBy array length
+          if (post.likedBy) {
+            post.likeCount = Array.isArray(post.likedBy)
+              ? post.likedBy.length
+              : 0;
+          }
         },
-        {
-          fields: ['createdAt'],
-        },
-      ],
+      },
     }
   );
 

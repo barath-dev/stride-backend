@@ -1,48 +1,73 @@
-// src/models/community.js
 'use strict';
 const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Community extends Model {
     static associate(models) {
-      // Community has many Posts
+      // Community has many posts
       Community.hasMany(models.Post, {
         foreignKey: 'communityId',
         as: 'posts',
-      });
-
-      // Community belongs to many Users (through UserCommunity)
-      Community.belongsToMany(models.User, {
-        through: 'UserCommunity',
-        foreignKey: 'communityId',
-        otherKey: 'userId',
-        as: 'members',
+        onDelete: 'SET NULL',
       });
     }
+
+    // Instance methods
+    getMemberCount() {
+      return Array.isArray(this.followers) ? this.followers.length : 0;
+    }
+
+    isMember(userId) {
+      return Array.isArray(this.followers) && this.followers.includes(userId);
+    }
+
+    async addMember(userId) {
+      if (!this.isMember(userId)) {
+        const updatedFollowers = [...(this.followers || []), userId];
+        await this.update({ followers: updatedFollowers });
+        return true;
+      }
+      return false;
+    }
+
+    async removeMember(userId) {
+      if (this.isMember(userId)) {
+        const updatedFollowers = (this.followers || []).filter(
+          id => id !== userId
+        );
+        await this.update({ followers: updatedFollowers });
+        return true;
+      }
+      return false;
+    }
   }
+
   Community.init(
     {
       communityId: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(36),
         unique: true,
         allowNull: false,
       },
       communityName: {
-        type: DataTypes.TEXT,
+        type: DataTypes.STRING(100),
         allowNull: false,
         unique: true,
         validate: {
-          len: [3, 50],
+          notEmpty: true,
+          len: [3, 100],
         },
       },
       communityDescription: {
         type: DataTypes.TEXT,
         allowNull: false,
         validate: {
-          len: [10, 500],
+          notEmpty: true,
+          len: [10, 1000],
         },
       },
       category: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(20),
         allowNull: false,
         validate: {
           isIn: [
@@ -62,38 +87,56 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       profileUrl: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(500),
         allowNull: true,
+        validate: {
+          isUrl: true,
+        },
       },
-      // These will be replaced by the UserCommunity association table
       followers: {
-        type: DataTypes.JSON,
+        type: DataTypes.JSONB,
         defaultValue: [],
-        allowNull: false,
+        validate: {
+          isArray(value) {
+            if (!Array.isArray(value)) {
+              throw new Error('Followers must be an array');
+            }
+          },
+        },
       },
       postIds: {
-        type: DataTypes.JSON,
+        type: DataTypes.JSONB,
         defaultValue: [],
+        validate: {
+          isArray(value) {
+            if (!Array.isArray(value)) {
+              throw new Error('PostIds must be an array');
+            }
+          },
+        },
+      },
+      isActive: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
         allowNull: false,
       },
     },
     {
       sequelize,
       modelName: 'Community',
-      indexes: [
-        {
-          unique: true,
-          fields: ['communityId'],
+      defaultScope: {
+        where: { isActive: true },
+      },
+      scopes: {
+        withInactive: {
+          where: {},
         },
-        {
-          unique: true,
-          fields: ['communityName'],
-        },
-        {
-          fields: ['category'],
-        },
-      ],
+        byCategory: category => ({
+          where: { category, isActive: true },
+        }),
+      },
     }
   );
+
   return Community;
 };
