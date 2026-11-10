@@ -1,2 +1,10 @@
 node_modules/
 ./build
+
+# Secrets: never commit
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secure_files/
